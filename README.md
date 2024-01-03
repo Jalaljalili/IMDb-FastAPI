@@ -33,6 +33,10 @@ docker run --name imdb-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:54
 ```bash
 python import_tsv_to_postgres.py
 ```
+for download and install, Save `download_and_install.sh`script and then run it in your terminal:
+```bash
+bash download_and_install.sh
+```
 
 ## Dataset Information
 
