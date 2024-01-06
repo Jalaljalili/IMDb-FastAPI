@@ -54,6 +54,47 @@ The script handles the following IMDb datasets:
 
 The script provides a generic `import_data` function that you can easily extend to handle additional datasets. It supports parameterization for file path, table name, schema, columns, and chunk size.
 
+
+## ERD
+An entity-relationship diagram (ERD) for these datasets involves representing how the various data elements or entities relate to each other. Below is a verbal description of how you could design the ERD for the datasets provided:
+
+1. **Entity:** `title.akas`
+   - **Attributes:** `titleId`, `ordering`, `title`, `region`, `language`, `types`, `attributes`, `isOriginalTitle`
+   - **Primary Key:** Composite key (`titleId`, `ordering`)
+   - **Foreign Key:** None explicitly mentioned; `titleId` relates to `tconst` in other tables
+
+2. **Entity:** `title.basics`
+   - **Attributes:** `tconst`, `titleType`, `primaryTitle`, `originalTitle`, `isAdult`, `startYear`, `endYear`, `runtimeMinutes`, `genres`
+   - **Primary Key:** `tconst`
+   - **Foreign Key:** `tconst` relates to `titleId` in `title.akas`, `title.crew`, `title.episode`, `title.principals`, and `title.ratings`
+
+3. **Entity:** `title.crew`
+   - **Attributes:** `tconst`, `directors`, `writers`
+   - **Primary Key:** `tconst`
+   - **Foreign Key:** `tconst` relates to `titleId` in `title.akas` and `tconst` in `title.basics`
+
+4. **Entity:** `title.episode`
+   - **Attributes:** `tconst`, `parentTconst`, `seasonNumber`, `episodeNumber`
+   - **Primary Key:** `tconst`
+   - **Foreign Key:** `parentTconst` relates to `tconst` of the `title.basics` entity
+
+5. **Entity:** `title.principals`
+   - **Attributes:** `tconst`, `ordering`, `nconst`, `category`, `job`, `characters`
+   - **Primary Key:** Composite key (`tconst`, `ordering`)
+   - **Foreign Key:** `tconst` relates to `titleId` in `title.akas` and `tconst` in `title.basics`; `nconst` relates to `name.basics`
+
+6. **Entity:** `title.ratings`
+   - **Attributes:** `tconst`, `averageRating`, `numVotes`
+   - **Primary Key:** `tconst`
+   - **Foreign Key:** `tconst` relates to `titleId` in `title.akas` and `tconst` in `title.basics`
+
+7. **Entity:** `name.basics`
+   - **Attributes:** `nconst`, `primaryName`, `birthYear`, `deathYear`, `primaryProfession`, `knownForTitles`
+   - **Primary Key:** `nconst`
+   - **Foreign Key:** `nconst` relates to `nconst` in `title.principals`
+
+Now, to tie this together visually in an ERD, you could depict each entity as a box and draw lines representing the relationships between them, usually with some kind of notation at the ends of the lines indicating the nature of the relationship (one-to-many, many-to-many, etc.).
+
 ## Notes
 
 -    The script reads the TSV files in chunks to handle large datasets.
